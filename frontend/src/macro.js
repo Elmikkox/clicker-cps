@@ -23,8 +23,8 @@ export function initMacro() {
       macroDot.classList.remove('active');
       macroStatusText.textContent = t('ready');
       MacroGetEvents().then(events => {
-        macroInfo.textContent  = t('eventsRecorded', events.length);
-        macroPlayBtn.disabled  = events.length === 0;
+        macroInfo.textContent = t('eventsRecorded', events.length);
+        macroPlayBtn.disabled = events.length === 0;
         renderMacroList(events, macroList);
       });
     } else {
@@ -69,12 +69,7 @@ function renderMacroList(events, macroList) {
   events.slice(0, 20).forEach((ev, i) => {
     const row = document.createElement('div');
     row.className = 'macro-event';
-    row.innerHTML = `
-      <span class="macro-idx">#${i + 1}</span>
-      <span class="macro-btn ${ev.button}">${ev.button.toUpperCase()}</span>
-      <span class="macro-delay">+${ev.delay_ms}ms</span>
-      <span class="macro-pos">${ev.x}, ${ev.y}</span>
-    `;
+    row.innerHTML = `<span class="macro-idx">#${i + 1}</span><span class="macro-btn ${ev.button}">${ev.button.toUpperCase()}</span><span class="macro-delay">+${ev.delay_ms}ms</span><span class="macro-pos">${ev.x}, ${ev.y}</span>`;
     macroList.appendChild(row);
   });
   if (events.length > 20) {
@@ -88,11 +83,10 @@ function renderMacroList(events, macroList) {
 export function refreshMacroLang() {
   const el = (id) => document.getElementById(id);
   if (el('macroRecordBtn') && !macroRecording) el('macroRecordBtn').textContent = t('record');
-  if (el('macroPlayBtn'))   el('macroPlayBtn').textContent  = t('play');
-  if (el('macroStopBtn'))   el('macroStopBtn').textContent  = t('stop');
-  if (el('macroClearBtn'))  el('macroClearBtn').textContent = t('clear');
+  if (el('macroPlayBtn'))  el('macroPlayBtn').textContent  = t('play');
+  if (el('macroStopBtn'))  el('macroStopBtn').textContent  = t('stop');
+  if (el('macroClearBtn')) el('macroClearBtn').textContent = t('clear');
   if (el('macroStatusText') && !macroRecording && !macroPlaying)
     el('macroStatusText').textContent = t('ready');
-  if (el('macroInfo') && el('macroInfo').textContent === 'No events recorded' || el('macroInfo')?.textContent === 'Нет записанных событий')
-    el('macroInfo').textContent = t('noEvents');
+  if (el('macroInfo')) el('macroInfo').textContent = t('noEvents');
 }

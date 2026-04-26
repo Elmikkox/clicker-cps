@@ -28,7 +28,6 @@ export function drawGraph(canvas, ctx, mode) {
 
   ctx.clearRect(0, 0, w, h);
 
-  // grid lines
   ctx.strokeStyle = '#1e1e2e';
   ctx.lineWidth = 1;
   for (let i = 1; i < 4; i++) {
@@ -36,7 +35,6 @@ export function drawGraph(canvas, ctx, mode) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
   }
 
-  // gradient fill
   const grad = ctx.createLinearGradient(0, 0, 0, h);
   grad.addColorStop(0, colors.fill);
   grad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -52,7 +50,6 @@ export function drawGraph(canvas, ctx, mode) {
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // line
   ctx.beginPath();
   history.forEach((v, i) => {
     const x = i * stepX, y = h - (v / maxVal) * (h - 8);
@@ -63,7 +60,6 @@ export function drawGraph(canvas, ctx, mode) {
   ctx.lineJoin = 'round';
   ctx.stroke();
 
-  // dot at latest value
   const lv = history[history.length - 1];
   const dotX = (HISTORY_LEN - 1) * stepX;
   const dotY = h - (lv / maxVal) * (h - 8);

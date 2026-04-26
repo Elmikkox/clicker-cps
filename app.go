@@ -18,20 +18,17 @@ const (
 )
 
 type App struct {
-	ctx      context.Context
-	mu       sync.Mutex
-	mode     Mode
-	running  bool
-	stopHook chan struct{}
-
-	lmb       clickTrack
-	rmb       clickTrack
-	startTime time.Time
-
-	ac           *AutoClicker
-	macroStop    chan struct{}
-	macroPlaying bool
-
+	ctx           context.Context
+	mu            sync.Mutex
+	mode          Mode
+	running       bool
+	stopHook      chan struct{}
+	lmb           clickTrack
+	rmb           clickTrack
+	startTime     time.Time
+	ac            *AutoClicker
+	macroStop     chan struct{}
+	macroPlaying  bool
 	heatmapActive bool
 }
 
@@ -75,7 +72,6 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
-	// install permanent keyboard hook for global hotkeys
 	go a.runKeyboardHook()
 
 	go func() {
@@ -113,8 +109,6 @@ func (a *App) startup(ctx context.Context) {
 		}
 	}()
 }
-
-// ── CPS Counter ───────────────────────────────────────────────────────────────
 
 func (a *App) SetMode(m string) {
 	a.mu.Lock()
@@ -253,8 +247,6 @@ func (a *App) formatElapsed() string {
 	return fmt.Sprintf("%02d:%02d", m, s)
 }
 
-// ── Auto Clicker ──────────────────────────────────────────────────────────────
-
 func (a *App) ClickerStart() { a.ac.Start() }
 func (a *App) ClickerStop()  { a.ac.Stop() }
 
@@ -354,21 +346,12 @@ func (a *App) ClickerSetScheduler(enabled bool, clickSecs, pauseSecs, repeats in
 
 func (a *App) ClickerIsRunning() bool { return a.ac.IsRunning() }
 
-// ── Clicker hotkey binds ──────────────────────────────────────────────────────
-
 func (a *App) ClickerSetStartBind(vk uint32) { a.SetClickerStartBind(vk) }
 func (a *App) ClickerSetStopBind(vk uint32)  { a.SetClickerStopBind(vk) }
 func (a *App) ClickerClearBinds()            { a.ClearClickerBinds() }
 
-// ── Macro ─────────────────────────────────────────────────────────────────────
-
-func (a *App) MacroStartRecord() {
-	a.ac.StartMacroRecord()
-}
-
-func (a *App) MacroStopRecord() {
-	a.ac.StopMacroRecord()
-}
+func (a *App) MacroStartRecord() { a.ac.StartMacroRecord() }
+func (a *App) MacroStopRecord()  { a.ac.StopMacroRecord() }
 
 func (a *App) MacroPlay() {
 	a.mu.Lock()
@@ -416,8 +399,6 @@ func (a *App) MacroGetEvents() []MacroEvent {
 	return out
 }
 
-// ── Heatmap ───────────────────────────────────────────────────────────────────
-
 func (a *App) HeatmapStart() {
 	a.mu.Lock()
 	defer a.mu.Unlock()
@@ -431,10 +412,5 @@ func (a *App) HeatmapStop() {
 	a.heatmapActive = false
 }
 
-func (a *App) HeatmapClear() {
-	a.ac.ClearHeatmap()
-}
-
-func (a *App) HeatmapGetPoints() []HeatmapPoint {
-	return a.ac.GetHeatmapPoints()
-}
+func (a *App) HeatmapClear()                    { a.ac.ClearHeatmap() }
+func (a *App) HeatmapGetPoints() []HeatmapPoint { return a.ac.GetHeatmapPoints() }

@@ -2,19 +2,12 @@ import {
   ClickerStart, ClickerStop,
   ClickerSetCPS, ClickerSetButton, ClickerSetHoldMs,
   ClickerSetPattern, ClickerSetBurst, ClickerSetJitter, ClickerSetScheduler,
-  ClickerSetStartBind, ClickerSetStopBind, ClickerClearBinds
+  ClickerSetStartBind, ClickerSetStopBind
 } from '../wailsjs/go/main/App';
 import { EventsOn } from '../wailsjs/runtime/runtime';
 import { t } from './i18n.js';
 
-// JS KeyboardEvent.code → Windows Virtual Key code
 const CODE_TO_VK = {
-  'KeyA':1,  'KeyB':2,  'KeyC':3,  'KeyD':4,  'KeyE':5,  'KeyF':6,
-  'KeyG':7,  'KeyH':8,  'KeyI':9,  'KeyJ':10, 'KeyK':11, 'KeyL':12,
-  'KeyM':13, 'KeyN':14, 'KeyO':15, 'KeyP':16, 'KeyQ':17, 'KeyR':18,
-  'KeyS':19, 'KeyT':20, 'KeyU':21, 'KeyV':22, 'KeyW':23, 'KeyX':24,
-  'KeyY':25, 'KeyZ':26,
-  // actual VK values
   'KeyA':0x41,'KeyB':0x42,'KeyC':0x43,'KeyD':0x44,'KeyE':0x45,'KeyF':0x46,
   'KeyG':0x47,'KeyH':0x48,'KeyI':0x49,'KeyJ':0x4A,'KeyK':0x4B,'KeyL':0x4C,
   'KeyM':0x4D,'KeyN':0x4E,'KeyO':0x4F,'KeyP':0x50,'KeyQ':0x51,'KeyR':0x52,
@@ -35,14 +28,9 @@ const CODE_TO_VK = {
   'AltLeft':0x12,'AltRight':0x12,
 };
 
-function codeToVK(code) {
-  return CODE_TO_VK[code] || 0;
-}
+function codeToVK(code) { return CODE_TO_VK[code] || 0; }
 
 let clickerRunning = false;
-let clickerCPS     = 10;
-let clickerButton  = 'left';
-let clickerHoldMs  = 10;
 let clickerPattern = 'uniform';
 let schedEnabled   = false;
 let jitterEnabled  = false;
@@ -51,7 +39,6 @@ let stopBind       = null;
 let listeningFor   = null;
 
 export function initClicker() {
-  // ── Basic ──────────────────────────────────────────────────────────────────
   const clickerCpsBig   = document.getElementById('clickerCpsBig');
   const clickerBadge    = document.getElementById('clickerBadge');
   const infoClickerCPS  = document.getElementById('infoClickerCPS');
@@ -71,22 +58,21 @@ export function initClicker() {
   const clickerDot      = document.getElementById('clickerDot');
 
   cpsSlider.addEventListener('input', () => {
-    clickerCPS = parseInt(cpsSlider.value);
-    cpsSliderVal.textContent = `${clickerCPS} /s`;
-    ClickerSetCPS(clickerCPS);
-    infoClickerCPS.textContent = clickerCPS;
-    if (clickerRunning) clickerCpsBig.textContent = clickerCPS;
+    const v = parseInt(cpsSlider.value);
+    cpsSliderVal.textContent = `${v} /s`;
+    ClickerSetCPS(v);
+    infoClickerCPS.textContent = v;
+    if (clickerRunning) clickerCpsBig.textContent = v;
   });
 
   holdSlider.addEventListener('input', () => {
-    clickerHoldMs = parseInt(holdSlider.value);
-    holdSliderVal.textContent = `${clickerHoldMs} ms`;
-    ClickerSetHoldMs(clickerHoldMs);
-    infoClickerHold.textContent = `${clickerHoldMs}ms`;
+    const v = parseInt(holdSlider.value);
+    holdSliderVal.textContent = `${v} ms`;
+    ClickerSetHoldMs(v);
+    infoClickerHold.textContent = `${v}ms`;
   });
 
   btnLeft.addEventListener('click', () => {
-    clickerButton = 'left';
     ClickerSetButton('left');
     btnLeft.className  = 'btn-toggle active-lmb';
     btnRight.className = 'btn-toggle';
@@ -94,7 +80,6 @@ export function initClicker() {
   });
 
   btnRight.addEventListener('click', () => {
-    clickerButton = 'right';
     ClickerSetButton('right');
     btnLeft.className  = 'btn-toggle';
     btnRight.className = 'btn-toggle active-rmb';
@@ -104,7 +89,6 @@ export function initClicker() {
   clickerStartBtn.addEventListener('click', () => ClickerStart());
   clickerStopBtn.addEventListener('click',  () => ClickerStop());
 
-  // ── Pattern ────────────────────────────────────────────────────────────────
   const patternCards  = document.querySelectorAll('.pattern-card');
   const burstSettings = document.getElementById('burstSettings');
   const burstMin      = document.getElementById('burstMin');
@@ -131,8 +115,8 @@ export function initClicker() {
     });
   });
 
-  burstMin.addEventListener('input', () => { burstMinVal.textContent = burstMin.value; updateBurst(); });
-  burstMax.addEventListener('input', () => { burstMaxVal.textContent = burstMax.value; updateBurst(); });
+  burstMin.addEventListener('input',   () => { burstMinVal.textContent   = burstMin.value;          updateBurst(); });
+  burstMax.addEventListener('input',   () => { burstMaxVal.textContent   = burstMax.value;          updateBurst(); });
   burstPause.addEventListener('input', () => { burstPauseVal.textContent = burstPause.value + 'ms'; updateBurst(); });
 
   function updateBurst() {
@@ -160,17 +144,16 @@ export function initClicker() {
     ClickerSetJitter(jitterEnabled, parseInt(jitterAmp.value));
   });
 
-  // ── Scheduler ──────────────────────────────────────────────────────────────
-  const schedOff       = document.getElementById('schedOff');
-  const schedOn        = document.getElementById('schedOn');
-  const schedSettings  = document.getElementById('schedSettings');
-  const schedClick     = document.getElementById('schedClick');
-  const schedPause     = document.getElementById('schedPause');
-  const schedRepeats   = document.getElementById('schedRepeats');
-  const schedClickVal  = document.getElementById('schedClickVal');
-  const schedPauseVal  = document.getElementById('schedPauseVal');
+  const schedOff        = document.getElementById('schedOff');
+  const schedOn         = document.getElementById('schedOn');
+  const schedSettings   = document.getElementById('schedSettings');
+  const schedClick      = document.getElementById('schedClick');
+  const schedPause      = document.getElementById('schedPause');
+  const schedRepeats    = document.getElementById('schedRepeats');
+  const schedClickVal   = document.getElementById('schedClickVal');
+  const schedPauseVal   = document.getElementById('schedPauseVal');
   const schedRepeatsVal = document.getElementById('schedRepeatsVal');
-  const schedPreview   = document.getElementById('schedPreview');
+  const schedPreview    = document.getElementById('schedPreview');
 
   schedOff.addEventListener('click', () => {
     schedEnabled = false;
@@ -193,7 +176,7 @@ export function initClicker() {
       schedClickVal.textContent   = schedClick.value + ' s';
       schedPauseVal.textContent   = schedPause.value + ' s';
       const r = parseInt(schedRepeats.value);
-      schedRepeatsVal.textContent = r === 0 ? '∞' : r;
+      schedRepeatsVal.textContent = r === 0 ? 'inf' : r;
       updateSchedulerPreview();
       updateScheduler();
     });
@@ -206,11 +189,10 @@ export function initClicker() {
   function updateSchedulerPreview() {
     const c = schedClick.value, p = schedPause.value;
     const r = parseInt(schedRepeats.value);
-    schedPreview.textContent = `${t('click')} ${c}s → ${t('pause')} ${p}s → ${r === 0 ? '∞' : r + 'x'}`;
+    schedPreview.textContent = `${t('click')} ${c}s - ${t('pause')} ${p}s - ${r === 0 ? 'inf' : r + 'x'}`;
   }
   updateSchedulerPreview();
 
-  // ── Hotkeys ────────────────────────────────────────────────────────────────
   bindStart.addEventListener('click', () => startListening('start'));
   bindStop.addEventListener('click',  () => startListening('stop'));
 
@@ -239,12 +221,10 @@ export function initClicker() {
       listeningFor = null;
       return;
     }
-    // fallback: also handle in-window for when hook isn't active
     if (startBind && e.code === startBind && !clickerRunning) ClickerStart();
     if (stopBind  && e.code === stopBind  && clickerRunning)  ClickerStop();
   });
 
-  // ── Status from Go ─────────────────────────────────────────────────────────
   EventsOn('clicker_status', (data) => {
     const running = data.running;
     if (running !== clickerRunning) {
@@ -265,8 +245,6 @@ export function refreshClickerLang() {
   const el = (id) => document.getElementById(id);
   const badge = el('clickerBadge');
   if (badge) badge.textContent = clickerRunning ? t('running') : t('stopped');
-  if (el('clickerStartBtn')) el('clickerStartBtn').textContent = `▶ ${t('start').replace('▶ ', '')}`;
-  if (el('clickerStopBtn'))  el('clickerStopBtn').textContent  = `■ ${t('stop').replace('■ ', '')}`;
   if (el('bindStart') && !el('bindStart').classList.contains('listening') && !startBind)
     el('bindStart').textContent = t('clickToSet');
   if (el('bindStop') && !el('bindStop').classList.contains('listening') && !stopBind)

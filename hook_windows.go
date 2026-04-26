@@ -49,8 +49,6 @@ type KBDLLHOOKSTRUCT struct {
 	DwExtraInfo uintptr
 }
 
-// ── Global keyboard binds ─────────────────────────────────────────────────────
-
 type keyBind struct {
 	mu      sync.Mutex
 	startVK uint32
@@ -77,8 +75,6 @@ func (a *App) ClearClickerBinds() {
 	globalBinds.startVK = 0
 	globalBinds.stopVK = 0
 }
-
-// ── Permanent keyboard hook (runs for app lifetime) ───────────────────────────
 
 func (a *App) runKeyboardHook() {
 	var kbHandle uintptr
@@ -108,7 +104,6 @@ func (a *App) runKeyboardHook() {
 	}
 	kbHandle = kh
 
-	// message pump — required for low-level hooks
 	var msg MSG
 	for {
 		ret, _, _ := procGetMessage.Call(uintptr(unsafe.Pointer(&msg)), 0, 0, 0)
@@ -121,8 +116,6 @@ func (a *App) runKeyboardHook() {
 
 	procUnhookWindowsHookEx.Call(kbHandle)
 }
-
-// ── Mouse hook (active only while CPS counter is running) ─────────────────────
 
 func (a *App) installHook(stopCh chan struct{}) {
 	var mouseHandle uintptr

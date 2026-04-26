@@ -13,7 +13,6 @@ export function initHeatmap() {
   const heatmapEmpty    = document.getElementById('heatmapEmpty');
   const hctx            = heatmapCanvas.getContext('2d');
 
-  // resize canvas when wrap resizes
   new ResizeObserver(() => {
     const wrap = heatmapCanvas.parentElement;
     heatmapCanvas.width  = wrap.clientWidth;
@@ -72,7 +71,6 @@ function renderHeatmap(hctx, canvas, points, infoEl, emptyEl) {
   const rangeX = maxX - minX || 1;
   const rangeY = maxY - minY || 1;
 
-  // glow blobs
   points.forEach(pt => {
     const cx = ((pt.x - minX) / rangeX) * (w - 60) + 30;
     const cy = ((pt.y - minY) / rangeY) * (h - 60) + 30;
@@ -85,7 +83,6 @@ function renderHeatmap(hctx, canvas, points, infoEl, emptyEl) {
     hctx.fill();
   });
 
-  // dots
   points.forEach(pt => {
     const cx = ((pt.x - minX) / rangeX) * (w - 60) + 30;
     const cy = ((pt.y - minY) / rangeY) * (h - 60) + 30;
@@ -100,6 +97,6 @@ function renderHeatmap(hctx, canvas, points, infoEl, emptyEl) {
 }
 
 export function refreshHeatmapLang() {
-  const el = (id) => document.getElementById(id);
-  if (el('heatmapEmpty')) el('heatmapEmpty').textContent = t('heatmapEmpty');
+  const el = document.getElementById('heatmapEmpty');
+  if (el) el.textContent = t('heatmapEmpty');
 }
