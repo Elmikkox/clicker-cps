@@ -1,0 +1,13 @@
+# Build output
+build/bin/
+
+# Frontend
+frontend/dist/
+frontend/node_modules/
+
+# Go
+*.exe
+*.test
+
+# Wails
+wailsjs/

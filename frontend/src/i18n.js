@@ -1,0 +1,181 @@
+export const translations = {
+  en: {
+    // Sidebar
+    tools: 'TOOLS',
+    cpsCounter: 'CPS Counter',
+    clicker: 'Clicker',
+
+    // Counter page
+    clicksPerSecond: 'CLICKS PER SECOND',
+    peak: 'PEAK',
+    total: 'TOTAL',
+    time: 'TIME',
+    start: '▶ START',
+    stop: '■ STOP',
+    reset: '↺ RESET',
+    mcbePvp: 'MCBE PvP',
+
+    // Clicker page
+    autoClicker: 'Auto Clicker',
+    running: 'RUNNING',
+    stopped: 'STOPPED',
+    cps: 'CPS',
+    button: 'BUTTON',
+    hold: 'HOLD',
+    pattern: 'PATTERN',
+    left: 'LEFT',
+    right: 'RIGHT',
+
+    // Sub-tabs
+    basic: 'Basic',
+    patternTab: 'Pattern',
+    scheduler: 'Scheduler',
+    macro: 'Macro',
+    heatmap: 'Heatmap',
+
+    // Settings
+    settings: 'SETTINGS',
+    hotkeys: 'HOTKEYS',
+    clickToSet: 'Click to set',
+    pressKey: 'Press a key...',
+
+    // Pattern
+    clickPattern: 'CLICK PATTERN',
+    uniform: 'UNIFORM',
+    uniformDesc: 'Constant interval between clicks',
+    human: 'HUMAN',
+    humanDesc: '±15% random variation — bypasses anti-cheat',
+    burst: 'BURST',
+    burstDesc: 'Click bursts with pauses between them',
+    burstSettings: 'BURST SETTINGS',
+    min: 'MIN',
+    max: 'MAX',
+    pause: 'PAUSE',
+    jitter: 'JITTER',
+    enabled: 'ENABLED',
+    amplitude: 'AMPLITUDE',
+    off: 'OFF',
+    on: 'ON',
+
+    // Scheduler
+    schedulerTitle: 'SCHEDULER',
+    schedule: 'SCHEDULE',
+    click: 'CLICK',
+    repeats: 'REPEATS',
+
+    // Macro
+    macroRecorder: 'MACRO RECORDER',
+    record: '⏺ RECORD',
+    stopRec: '⏹ STOP REC',
+    play: '▶ PLAY',
+    clear: '✕ CLEAR',
+    ready: 'Ready',
+    recording: 'Recording...',
+    playing: 'Playing...',
+    noEvents: 'No events recorded',
+    eventsRecorded: (n) => `${n} events recorded`,
+    moreEvents: (n) => `+${n} more events`,
+
+    // Heatmap
+    heatmapTitle: 'CLICK HEATMAP',
+    heatmapEmpty: 'Start recording to see your click heatmap',
+    clicksRecorded: (n) => `${n} clicks recorded`,
+  },
+
+  ru: {
+    // Sidebar
+    tools: 'ИНСТРУМЕНТЫ',
+    cpsCounter: 'CPS Счётчик',
+    clicker: 'Кликер',
+
+    // Counter page
+    clicksPerSecond: 'КЛИКОВ В СЕКУНДУ',
+    peak: 'ПИКОВЫЙ',
+    total: 'ВСЕГО',
+    time: 'ВРЕМЯ',
+    start: '▶ СТАРТ',
+    stop: '■ СТОП',
+    reset: '↺ СБРОС',
+    mcbePvp: 'MCBE PvP',
+
+    // Clicker page
+    autoClicker: 'Авто Кликер',
+    running: 'РАБОТАЕТ',
+    stopped: 'ОСТАНОВЛЕН',
+    cps: 'КПС',
+    button: 'КНОПКА',
+    hold: 'УДЕРЖАНИЕ',
+    pattern: 'ПАТТЕРН',
+    left: 'ЛЕВАЯ',
+    right: 'ПРАВАЯ',
+
+    // Sub-tabs
+    basic: 'Основное',
+    patternTab: 'Паттерн',
+    scheduler: 'Расписание',
+    macro: 'Макрос',
+    heatmap: 'Тепловая карта',
+
+    // Settings
+    settings: 'НАСТРОЙКИ',
+    hotkeys: 'ГОРЯЧИЕ КЛАВИШИ',
+    clickToSet: 'Нажмите для настройки',
+    pressKey: 'Нажмите клавишу...',
+
+    // Pattern
+    clickPattern: 'ПАТТЕРН КЛИКОВ',
+    uniform: 'РАВНОМЕРНЫЙ',
+    uniformDesc: 'Постоянный интервал между кликами',
+    human: 'ЧЕЛОВЕЧЕСКИЙ',
+    humanDesc: '±15% случайная вариация — обход античита',
+    burst: 'СЕРИЙНЫЙ',
+    burstDesc: 'Серии кликов с паузами между ними',
+    burstSettings: 'НАСТРОЙКИ СЕРИЙ',
+    min: 'МИН',
+    max: 'МАКС',
+    pause: 'ПАУЗА',
+    jitter: 'ДРОЖАНИЕ',
+    enabled: 'ВКЛЮЧЕНО',
+    amplitude: 'АМПЛИТУДА',
+    off: 'ВЫКЛ',
+    on: 'ВКЛ',
+
+    // Scheduler
+    schedulerTitle: 'РАСПИСАНИЕ',
+    schedule: 'ГРАФИК',
+    click: 'КЛИК',
+    repeats: 'ПОВТОРЫ',
+
+    // Macro
+    macroRecorder: 'ЗАПИСЬ МАКРОСА',
+    record: '⏺ ЗАПИСЬ',
+    stopRec: '⏹ СТОП',
+    play: '▶ ИГРАТЬ',
+    clear: '✕ ОЧИСТИТЬ',
+    ready: 'Готово',
+    recording: 'Запись...',
+    playing: 'Воспроизведение...',
+    noEvents: 'Нет записанных событий',
+    eventsRecorded: (n) => `Записано ${n} событий`,
+    moreEvents: (n) => `+${n} ещё событий`,
+
+    // Heatmap
+    heatmapTitle: 'ТЕПЛОВАЯ КАРТА',
+    heatmapEmpty: 'Начните запись чтобы увидеть тепловую карту кликов',
+    clicksRecorded: (n) => `Записано ${n} кликов`,
+  }
+};
+
+let currentLang = 'en';
+
+export function getLang() { return currentLang; }
+
+export function setLang(lang) {
+  currentLang = lang;
+}
+
+export function t(key, ...args) {
+  const val = translations[currentLang][key];
+  if (typeof val === 'function') return val(...args);
+  return val ?? key;
+}
