@@ -9,7 +9,7 @@
 
 ## Download
 
-**[⬇ Download latest release](https://github.com/Elmikkox/clicker/releases/latest)**
+**[⬇ Download latest release](https://github.com/Elmikkox/clicker-cps/releases/tag/v1.0.0)**
 
 > Requires Windows 10 / 11. WebView2 is pre-installed on Windows 11. On Windows 10 it will install automatically on first launch.
 
